@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Docidv Facetec iframe Tester - SPX-1104</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .iframe-container {
+        position: relative;
+        width: 900px;
+        height: 900px;
+        margin: 0 auto;
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #666;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Docidv iframe App Test</h1>
+        <p>Testing: https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ</p>
+      </div>
+      <div class="iframe-container">
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p>Loading iframe...</p>
+        </div>
+        <iframe
+          id="testFrame"
+          src="https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ"
+          title="Localhost App Test"
+          allow="camera; microphone; geolocation; fullscreen; clipboard-read; clipboard-write"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+          onload="document.getElementById('loading').style.display='none'"
+          allowfullscreen
+        >
+        </iframe>
+      </div>
+    </div>
+
+    <script>
+      // Handle iframe load errors
+      const iframe = document.getElementById("testFrame");
+      const loading = document.getElementById("loading");
+
+      iframe.onerror = function () {
+        loading.innerHTML =
+          '<p style="color: red;">Failed to load iframe. Make sure your localhost:3000 server is running.</p>';
+      };
+
+      // Timeout for loading indicator
+      setTimeout(() => {
+        if (loading.style.display !== "none") {
+          loading.innerHTML =
+            '<p style="color: orange;">Still loading... If this persists, check if localhost:3000 is accessible.</p>';
+        }
+      }, 5000);
+    </script>
+  </body>
+</html>
