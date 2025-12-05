@@ -26,6 +26,73 @@
         overflow: hidden;
       }
 
+      .main-content {
+        display: flex;
+      }
+
+      .side-panel {
+        width: 300px;
+        background-color: #34495e;
+        padding: 20px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .side-panel h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #ecf0f1;
+      }
+
+      .side-panel label {
+        font-size: 14px;
+        margin-bottom: 5px;
+        display: block;
+        color: #bdc3c7;
+      }
+
+      .side-panel input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #7f8c8d;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #2c3e50;
+        color: white;
+      }
+
+      .side-panel input:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+
+      .side-panel button {
+        width: 100%;
+        padding: 12px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .side-panel button:hover {
+        background-color: #2980b9;
+      }
+
+      .side-panel button:active {
+        background-color: #21618c;
+      }
+
+      .content-area {
+        flex: 1;
+      }
+
       .header {
         background-color: #2c3e50;
         color: white;
@@ -45,9 +112,8 @@
 
       .iframe-container {
         position: relative;
-        width: 900px;
+        width: 100%;
         height: 900px;
-        margin: 0 auto;
       }
 
       iframe {
@@ -89,23 +155,42 @@
     <div class="container">
       <div class="header">
         <h1>Docidv iframe App Test</h1>
-        <p>Testing: https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ</p>
+        <p id="currentUrl">
+          Testing: https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ
+        </p>
       </div>
-      <div class="iframe-container">
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          <p>Loading iframe...</p>
+      <div class="main-content">
+        <div class="side-panel">
+          <h2>URL Settings</h2>
+          <div>
+            <label for="urlInput">iframe Source URL:</label>
+            <input
+              type="text"
+              id="urlInput"
+              placeholder="Enter URL..."
+              value="https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ"
+            />
+          </div>
+          <button id="applyBtn">Apply URL</button>
         </div>
-        <iframe
-          id="testFrame"
-          src="https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ"
-          title="Localhost App Test"
-          allow="camera; microphone; geolocation; fullscreen; clipboard-read; clipboard-write"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
-          onload="document.getElementById('loading').style.display='none'"
-          allowfullscreen
-        >
-        </iframe>
+        <div class="content-area">
+          <div class="iframe-container">
+            <div class="loading" id="loading">
+              <div class="spinner"></div>
+              <p>Loading iframe...</p>
+            </div>
+            <iframe
+              id="testFrame"
+              src="https://go.dev7.idnow.de/docidv?identToken=DV7-RHULQ"
+              title="Localhost App Test"
+              allow="camera; microphone; geolocation; fullscreen; clipboard-read; clipboard-write"
+              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+              onload="document.getElementById('loading').style.display='none'"
+              allowfullscreen
+            >
+            </iframe>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -113,6 +198,8 @@
       // Handle iframe load errors
       const iframe = document.getElementById("testFrame");
       const loading = document.getElementById("loading");
+      const urlInput = document.getElementById("urlInput");
+      const applyBtn = document.getElementById("applyBtn");
 
       iframe.onerror = function () {
         loading.innerHTML =
@@ -126,6 +213,33 @@
             '<p style="color: orange;">Still loading... If this persists, check if localhost:3000 is accessible.</p>';
         }
       }, 5000);
+
+      // Apply URL button handler
+      applyBtn.addEventListener("click", function () {
+        const newUrl = urlInput.value.trim();
+        if (newUrl) {
+          // Show loading indicator
+          loading.style.display = "block";
+          loading.innerHTML =
+            '<div class="spinner"></div><p>Loading iframe...</p>';
+
+          // Update iframe src
+          iframe.src = newUrl;
+
+          // Update header text
+          document.getElementById("currentUrl").textContent =
+            "Testing: " + newUrl;
+        } else {
+          alert("Please enter a valid URL");
+        }
+      });
+
+      // Allow pressing Enter in the input field to apply URL
+      urlInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          applyBtn.click();
+        }
+      });
     </script>
   </body>
 </html>
